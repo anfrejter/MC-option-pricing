@@ -1,5 +1,10 @@
 #include <cmath>
 #include <iostream>
+#include <vector>
 
-double get_arr_mean(double* arr, unsigned int n);
+using std::vector;
+
+double get_arr_mean(vector <double> arr);
 double get_max(double a, double b);
+double get_arr_stddev(vector <double> arr);
+double get_arr_stddev(vector <double> arr, double mean);

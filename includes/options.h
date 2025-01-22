@@ -1,6 +1,9 @@
 #ifndef OPTIONS_H
 #define OPTIONS_H
 #include <string>
+#include <vector>
+
+using std::vector;
 
 class Option
 {
@@ -11,31 +14,37 @@ class Option
         double r;
         double expiry;
         unsigned int n_intervals;
-        double* this_path; // pointer to dynamic array
-        double* this_payout; // pointer to dynamic array, for calculating variance and avg payout
+        vector<double> this_path;
+        vector<double> this_payout;
+        unsigned int n_sim;
+        double price=-1.0;
 
     public:
         // constructor
-        Option(double _strike, 
-               double _spot, 
+        Option();
+        Option(double _strike,
+               double _spot,
                double _vol,
                double _r,
-               double _expiry);
-        
-        enum class OptionType { call, put };
-        enum class OptionStyle { european, barrier };
-        enum class BarrierType { down_in, down_out, up_in, up_out };
+               double _expiry,
+               unsigned int _n_intervals);
 
-        // destructor
-        ~Option();
+        enum OptionType { call, put };
+        enum OptionStyle { european, barrier };
+        enum BarrierType { down_in, down_out, up_in, up_out };
 
         // methods
-        void generate_path(unsigned int _n_intervals);
+        void print_details();
+        void generate_path();
+        void generate_path(int n);
         void print_path();
+        void print_payout();
         double get_payout(OptionType type, double end_price);
         bool is_barrier_touched(double barrier_price, BarrierType type);
         double get_price(int n_sim, OptionType type, OptionStyle style);
         double get_price(int n_sim, OptionType type, OptionStyle style, BarrierType b_type, double barrier_price);
+        double get_price();
+        double get_stddev();
 };
 
 #endif
