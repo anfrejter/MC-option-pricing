@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
 #include "options.h"
 #include "gen_rand.h"
 #include "helpers.h"
@@ -17,7 +18,7 @@ Option::Option()
     vol = 0.25;
     r = 0.05;
     expiry = 0.75;
-    n_intervals = 75;
+    n_intervals = 100;
     price=-1.0;
 }
 // constructor with parameters
@@ -256,4 +257,38 @@ void Option::print_details(){
     cout << "Risk-free rate: " << r << endl;
     cout << "Expiry: " << expiry << endl;
     cout << "Number of intervals: " << n_intervals << endl;
+}
+
+void Option::print_barrier_sensitivity(float _base_barrier, int _range, OptionType type, OptionStyle style, BarrierType b_type)
+{
+    cout << "Option price sensitivity to barrier" << endl;
+    cout << "Barrier" << "\t" << "price" << endl;
+    for (int i = 0; i < _range; i++)
+    {
+        float barrier = _base_barrier + (float(i)-float(_range)/2)*5;
+        cout << barrier << "\t"
+            << get_price(10000, type, style, b_type, barrier)
+            << endl;
+    }
+    cout << endl;
+}
+
+void Option::print_stddev_sensitivity(int _range, OptionType type, OptionStyle style, BarrierType b_type, double barrier_price)
+{
+    cout << "Standard deviation sensitivity to number of simulations" << endl;
+    cout << "n_sim" << "\t" << "std" << "\t" << "time" << endl;
+
+    for (int i = 0; i < _range; i++)
+    {
+        n_sim = pow(10, i+1);
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+        get_price(n_sim, type, style, b_type, barrier_price);
+        cout << n_sim << "\t"
+             << get_stddev()
+             << "\t";
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        cout << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count()
+             << endl;
+    }
+    cout << endl;
 }

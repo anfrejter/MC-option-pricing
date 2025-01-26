@@ -1,18 +1,28 @@
 #include "includes/options.h"
 #include "includes/helpers.h"
 #include <iostream>
+
+using std::cout;
+
 int main()
 {
     Option default_option;
 
     default_option.print_details();
-    // Option my_option(100, 100, 0.2, 0.05, 1, 252);
-    // my_option.generate_path(3);
-    std::cout << default_option.get_price(10000,
-                                         Option::OptionType::call,
-                                         Option::OptionStyle::barrier,
-                                         Option::BarrierType::down_in,
-                                         100)
-                                         <<'\n';
+    cout<<std::endl;
+
+    float base_barrier = 90;
+    int range = 10;
+
+    default_option.print_barrier_sensitivity(90,
+                                            20,
+                                            Option::OptionType::put,
+                                            Option::OptionStyle::barrier,
+                                            Option::BarrierType::down_in);
+    default_option.print_stddev_sensitivity(7,
+                                            Option::OptionType::put,
+                                            Option::OptionStyle::barrier,
+                                            Option::BarrierType::down_in,
+                                            90);
     return 0;
 }
